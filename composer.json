@@ -1,9 +1,9 @@
 {
     "name": "aa/api-tester",
     "type": "library",
-    "description": "Library for automated REST API tests.",
+    "description": "Library for automated REST API testing using fixtures",
     "homepage": "https://github.com/AAstakhov/api-tester",
-    "minimum-stability": "beta",
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.5 || ^7.0",
         "guzzlehttp/psr7": "~1.1",
