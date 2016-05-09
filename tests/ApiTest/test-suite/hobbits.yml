@@ -1,0 +1,16 @@
+tests:
+    test1:
+        request:
+            method: GET
+            uri: /hobbits
+        response:
+            status_code: 200
+            body:
+                -
+                    name: Bilbo Baggins
+                -
+                    name: Frodo Baggins
+                -
+                    name: Meriadoc Brandybuck
+                -
+                    name: Peregrin Took.

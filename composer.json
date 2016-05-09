@@ -1,0 +1,24 @@
+{
+    "name": "aa/api-tester",
+    "type": "library",
+    "description": "Library for automated REST API tests.",
+    "homepage": "https://github.com/AAstakhov/api-tester",
+    "minimum-stability": "beta",
+    "require": {
+        "php": ">=5.5 || ^7.0",
+        "guzzlehttp/psr7": "~1.1",
+        "symfony/yaml": "~2.3|~3.0",
+        "symfony/finder": "~2.3|~3.0",
+        "aa/array-comparator": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Aa\\ApiTester\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aa\\ApiTester\\Tests\\": "tests/"
+        }
+    }
+}
