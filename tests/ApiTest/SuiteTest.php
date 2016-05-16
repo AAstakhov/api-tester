@@ -2,18 +2,18 @@
 
 namespace Aa\ApiTester\Tests\ApiTest;
 
-use Aa\ApiTester\ApiTest\ApiTest;
-use Aa\ApiTester\ApiTest\ApiTestSuiteLoader;
+use Aa\ApiTester\ApiTest\Test;
+use Aa\ApiTester\ApiTest\SuiteLoader;
 use PHPUnit_Framework_TestCase;
 
-class ApiTestSuiteTest extends PHPUnit_Framework_TestCase
+class SuiteTest extends PHPUnit_Framework_TestCase
 {
     public function testGetTests()
     {
-        $loader = new ApiTestSuiteLoader();
+        $loader = new SuiteLoader();
         $testSuite = $loader->loadFromDir(__DIR__.'/test-suite');
 
-        /** @var ApiTest $test */
+        /** @var Test $test */
         foreach ($testSuite as $test) {
            $this->assertEquals('hobbits', $test->getTestSetName());
         }

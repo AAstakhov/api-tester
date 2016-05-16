@@ -5,7 +5,7 @@ namespace Aa\ApiTester\ApiTest;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class ApiTest
+class Test
 {
     /**
      * @var RequestInterface

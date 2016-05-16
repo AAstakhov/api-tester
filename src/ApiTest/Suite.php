@@ -8,7 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 
-class ApiTestSuite implements IteratorAggregate
+class Suite implements IteratorAggregate
 {
     /**
      * @var SplFileInfo[]
@@ -26,7 +26,7 @@ class ApiTestSuite implements IteratorAggregate
     }
 
     /**
-     * @return ApiTest[]
+     * @return Test[]
      */
     public function getIterator()
     {
@@ -34,7 +34,7 @@ class ApiTestSuite implements IteratorAggregate
     }
     
     /**
-     * @return ApiTest[]
+     * @return Test[]
      */
     public function getTests()
     {
@@ -50,10 +50,10 @@ class ApiTestSuite implements IteratorAggregate
                 $requestHeaders = $this->getRequestHeaders($test);
                 $request = new Request($test['request']['method'], $requestUri, $requestHeaders, $requestBody);
 
-                $responseBody = isset($test['request']['body']) ? json_encode($test['response']['body']) : null;
-                $response = new Response($test['request']['status_code'], [], $responseBody);
+                $responseBody = isset($test['response']['body']) ? json_encode($test['response']['body']) : null;
+                $response = new Response($test['response']['status_code'], [], $responseBody);
 
-                yield new ApiTest($request, $response, $file->getBasename('.yml'), $testName);
+                yield new Test($request, $response, $file->getBasename('.yml'), $testName);
             }
         }
     }
