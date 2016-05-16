@@ -9,7 +9,7 @@
         "guzzlehttp/psr7": "~1.1",
         "symfony/yaml": "~2.3|~3.0",
         "symfony/finder": "~2.3|~3.0",
-        "aa/array-comparator": "dev-master"
+        "aa/array-validator": "dev-master"
     },
     "autoload": {
         "psr-4": {
