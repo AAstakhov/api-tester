@@ -15,7 +15,7 @@ class SuiteTest extends PHPUnit_Framework_TestCase
 
         /** @var Test $test */
         foreach ($testSuite as $test) {
-           $this->assertEquals('hobbits', $test->getTestSetName());
+           $this->assertEquals('hobbits', $test->getTestMetadata()[0]);
         }
     }
 }

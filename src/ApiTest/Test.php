@@ -11,36 +11,29 @@ class Test
      * @var RequestInterface
      */
     private $request;
-    
+
     /**
-     * @var ResponseInterface
+     * @var ResponseExpectationInterface
      */
-    private $response;
-    
+    private $responseExpectation;
+
     /**
-     * @var string
+     * @var array
      */
-    private $testSetName;
-    
-    /**
-     * @var string
-     */
-    private $testName;
+    private $testMetadata;
 
     /**
      * Constructor.
-     * 
-     * @param RequestInterface $request
-     * @param ResponseInterface $response
-     * @param string $testSetName
-     * @param string $testName
+     *
+     * @param RequestInterface             $request
+     * @param ResponseExpectationInterface $responseExpectation
+     * @param array                        $testMetaData
      */
-    public function __construct(RequestInterface $request, ResponseInterface $response, $testSetName, $testName)
+    public function __construct(RequestInterface $request, ResponseExpectationInterface $responseExpectation, array $testMetaData)
     {
         $this->request = $request;
-        $this->response = $response;
-        $this->testSetName = $testSetName;
-        $this->testName = $testName;
+        $this->responseExpectation = $responseExpectation;
+        $this->testMetadata = $testMetaData;
     }
 
     /**
@@ -52,26 +45,19 @@ class Test
     }
 
     /**
-     * @return ResponseInterface
+     * @return ResponseExpectationInterface
      */
-    public function getResponse()
+    public function getResponseExpectation()
     {
-        return $this->response;
+        return $this->responseExpectation;
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getTestSetName()
+    public function getTestMetadata()
     {
-        return $this->testSetName;
+        return $this->testMetadata;
     }
 
-    /**
-     * @return string
-     */
-    public function getTestName()
-    {
-        return $this->testName;
-    }
 }

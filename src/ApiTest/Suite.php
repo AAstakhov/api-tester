@@ -3,10 +3,9 @@
 namespace Aa\ApiTester\ApiTest;
 
 use IteratorAggregate;
-use SplFileInfo;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
 
 class Suite implements IteratorAggregate
 {
@@ -50,10 +49,10 @@ class Suite implements IteratorAggregate
                 $requestHeaders = $this->getRequestHeaders($test);
                 $request = new Request($test['request']['method'], $requestUri, $requestHeaders, $requestBody);
 
-                $responseBody = isset($test['response']['body']) ? json_encode($test['response']['body']) : null;
-                $response = new Response($test['response']['status_code'], [], $responseBody);
+                $constraints = isset($test['response']['body_constraints']) ? $test['response']['body_constraints'] : null;
+                $response = new ResponseExpectation($test['response']['status_code'], [], $constraints);
 
-                yield new Test($request, $response, $file->getBasename('.yml'), $testName);
+                yield new Test($request, $response, [$file->getBasename('.yml'), $testName]);
             }
         }
     }

@@ -5,12 +5,9 @@ tests:
             uri: /hobbits
         response:
             status_code: 200
-            body:
-                -
-                    name: Bilbo Baggins
-                -
-                    name: Frodo Baggins
-                -
-                    name: Meriadoc Brandybuck
-                -
-                    name: Peregrin Took.
+
+            body_constraints:
+                0/name:
+                    - 'NotNull'
+
+
