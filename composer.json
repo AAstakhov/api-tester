@@ -11,6 +11,9 @@
         "symfony/finder": "~2.3|~3.0",
         "aa/array-validator": "dev-master"
     },
+    "require-dev": {
+        "phpunit/phpunit": "5.*"
+    },
     "autoload": {
         "psr-4": {
             "Aa\\ApiTester\\": "src/"
