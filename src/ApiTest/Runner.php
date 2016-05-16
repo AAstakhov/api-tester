@@ -43,7 +43,7 @@ class Runner
         $validator = new Validator();
         $violations = $validator->validate($responseData, $responseExpectation->getBodyConstraints());
 
-        if([] !== $violations) {
+        if(0 !== count($violations)) {
             throw new ValidatorException(sprintf('Test failed'));
         }
     }
