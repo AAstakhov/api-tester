@@ -25,7 +25,6 @@ class Runner
         foreach ($suite as $test) {
 
             $request = $test->getRequest();
-
             $response = $this->guzzleClient->send($request);
 
             $this->validateResponse($response, $test->getResponseExpectation(), $test->getTestMetadata());
