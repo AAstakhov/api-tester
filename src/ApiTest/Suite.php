@@ -2,26 +2,24 @@
 
 namespace Aa\ApiTester\ApiTest;
 
+use ArrayIterator;
 use IteratorAggregate;
-use Symfony\Component\Finder\SplFileInfo;
-use Symfony\Component\Yaml\Yaml;
-use GuzzleHttp\Psr7\Request;
 
 class Suite implements IteratorAggregate
 {
     /**
-     * @var SplFileInfo[]
+     * @var Test[]
      */
-    private $files;
+    private $tests;
 
     /**
      * Constructor.
      * 
-     * @param SplFileInfo[] $files
+     * @param Test[] $tests
      */
-    public function __construct($files)
+    public function __construct(array $tests)
     {
-        $this->files = $files;
+        $this->tests = $tests;
     }
 
     /**
@@ -29,7 +27,7 @@ class Suite implements IteratorAggregate
      */
     public function getIterator()
     {
-        return $this->getTests();
+        return new ArrayIterator($this->tests);
     }
     
     /**
@@ -37,69 +35,8 @@ class Suite implements IteratorAggregate
      */
     public function getTests()
     {
-        foreach ($this->files as $file) {
-
-            $fileContents = $file->getContents();
-            $data = Yaml::parse($fileContents);
-            
-            foreach($data['tests'] as $testName => $test) {
-
-                $requestUri = $this->getUri($test);
-                $requestBody = $this->getRequestBody($test);
-                $requestHeaders = $this->getRequestHeaders($test);
-                $request = new Request($test['request']['method'], $requestUri, $requestHeaders, $requestBody);
-
-                $constraints = isset($test['response']['body_constraints']) ? $test['response']['body_constraints'] : null;
-                $response = new ResponseExpectation($test['response']['status_code'], [], $constraints);
-
-                yield new Test($request, $response, [$file->getBasename('.yml'), $testName]);
-            }
-        }
+        return $this->tests;
     }
 
-    /**
-     * @param array $test
-     *
-     * @return string
-     */
-    private function getUri($test)
-    {
-        $uri = $test['request']['uri'];
-        if (isset($test['request']['query']) && '' !== $test['request']['query']) {
-            $uri .= '?'.$test['request']['query'];
-        }
-        return $uri;
-    }
 
-    /**
-     * @param array $test
-     *
-     * @return array
-     */
-    private function getRequestBody($test)
-    {
-        $requestBody = null;
-        if (isset($test['request']['body'])) {
-            if (is_array($test['request']['body'])) {
-                $requestBody = json_encode($test['request']['body']);
-            }
-        }
-
-        return $requestBody;
-    }
-
-    /**
-     * @param array $test
-     *
-     * @return array
-     */
-    private function getRequestHeaders($test)
-    {
-        $headers = [];
-        if (isset($test['request']['headers'])) {
-            $headers = $test['request']['headers'];
-        }
-        
-        return $headers;
-    }
 }
