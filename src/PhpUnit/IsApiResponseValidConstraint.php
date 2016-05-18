@@ -2,7 +2,7 @@
 
 namespace Aa\ApiTester\PhpUnit;
 
-use Aa\ApiTester\ApiTest\ResponseExpectationInterface;
+use Aa\ApiTester\ApiTest\Test;
 use Aa\ApiTester\Response\Validator;
 use PHPUnit_Framework_Constraint;
 use Psr\Http\Message\ResponseInterface;
@@ -10,16 +10,19 @@ use Psr\Http\Message\ResponseInterface;
 class IsApiResponseValidConstraint extends PHPUnit_Framework_Constraint
 {
     /**
-     * @var ResponseExpectationInterface
+     * @var Test
      */
-    private $responseExpectation;
+    private $test;
 
-    public function __construct(ResponseExpectationInterface $responseExpectation)
+    /**
+     * @param Test $test
+     */
+    public function __construct(Test $test)
     {
         parent::__construct();
 
         $this->validator = new Validator();
-        $this->responseExpectation = $responseExpectation;
+        $this->test = $test;
     }
 
 
@@ -30,7 +33,7 @@ class IsApiResponseValidConstraint extends PHPUnit_Framework_Constraint
      */
     public function matches($response)
     {
-        return 0 == count($this->validator->validate($response, $this->responseExpectation));
+        return 0 == count($this->validator->validate($response, $this->test->getConstraints()));
     }
 
     /**
@@ -48,9 +51,9 @@ class IsApiResponseValidConstraint extends PHPUnit_Framework_Constraint
      */
     protected function additionalFailureDescription($response)
     {
-        $violationMessages = $this->validator->validate($response, $this->responseExpectation);
+        $violations = $this->validator->validate($response, $this->test->getConstraints());
 
-        return implode("\n", $violationMessages);
+        return (string)$violations;
     }
 
     protected function failureDescription($response)

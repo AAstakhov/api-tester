@@ -3,13 +3,27 @@
 namespace Aa\ApiTester\ApiTest;
 
 
+use Aa\ArrayValidator\ConstraintReader;
 use GuzzleHttp\Psr7\Request;
+use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Validator\Constraints\EqualTo;
 use Symfony\Component\Yaml\Yaml;
 
 class SuiteLoader
 {
+    /**
+     * @var ConstraintReader
+     */
+    private $constraintReader;
+
+    function __construct()
+    {
+        $this->constraintReader = new ConstraintReader();
+    }
+
+
     /**
      * @param $testDirPath
      *
@@ -39,15 +53,16 @@ class SuiteLoader
 
             foreach($data['tests'] as $testName => $test) {
 
-                $requestUri = $this->getUri($test);
-                $requestBody = $this->getRequestBody($test);
-                $requestHeaders = $this->getRequestHeaders($test);
-                $request = new Request($test['request']['method'], $requestUri, $requestHeaders, $requestBody);
+                $request = $this->createRequest($test);
 
-                $constraints = isset($test['response']['body_constraints']) ? $test['response']['body_constraints'] : null;
-                $response = new ResponseExpectation($test['response']['status_code'], [], $constraints);
+                $constraints = [
+                    'status_code' => new EqualTo($test['response']['status_code'])
+                ];
 
-                $tests[] = new Test($request, $response, [$file->getBasename('.yml'), $testName]);
+                $constraintDefinitions = isset($test['response']['body']) ? $test['response']['body'] : [];
+                $constraints += $this->constraintReader->read($constraintDefinitions, 'body');
+
+                $tests[] = new Test($request, $constraints, [$file->getBasename('.yml'), $testName]);
             }
         }
 
@@ -100,5 +115,20 @@ class SuiteLoader
         }
 
         return $headers;
+    }
+
+    /**
+     * @param array $test
+     *
+     * @return RequestInterface
+     */
+    private function createRequest(array &$test)
+    {
+        $requestUri = $this->getUri($test);
+        $requestBody = $this->getRequestBody($test);
+        $requestHeaders = $this->getRequestHeaders($test);
+        $request = new Request($test['request']['method'], $requestUri, $requestHeaders, $requestBody);
+
+        return $request;
     }
 }

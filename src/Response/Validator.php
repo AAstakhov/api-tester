@@ -2,37 +2,43 @@
 
 namespace Aa\ApiTester\Response;
 
-use Aa\ApiTester\ApiTest\ResponseExpectationInterface;
 use Psr\Http\Message\ResponseInterface;
 use Aa\ArrayValidator\Validator as ArrayValidator;
-use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class Validator
 {
-    /**
-     * @param ResponseInterface            $response
-     * @param ResponseExpectationInterface $responseExpectation
-     *
-     * @return array
-     */
-    public function validate(ResponseInterface $response, ResponseExpectationInterface $responseExpectation)
-    {
-        $violationMessages = [];
-        if($response->getStatusCode() !== $responseExpectation->getStatusCode()) {
-            $violationMessages[] = sprintf('Expected status code: %s', $responseExpectation->getStatusCode());
-            $violationMessages[] = sprintf('Actual status code:   %s', $response->getStatusCode());
-        }
+    const STATUS_CODE_CONSTRAINT_MESSAGE = 'Response status code %s doesn\'t match expected status code %s';
 
-        $responseData = json_decode((string)$response->getBody(), true);
+    /**
+     * @param ResponseInterface  $response
+     * @param array|Constraint[]  $constraints
+     *
+     * @return ConstraintViolationListInterface
+     */
+    public function validate(ResponseInterface $response, array $constraints)
+    {
+        $responseData = $this->getResponseAsArray($response);
 
         $arrayValidator = new ArrayValidator();
-        $violations = $arrayValidator->validate($responseData, $responseExpectation->getBodyConstraints());
+        $violations = $arrayValidator->validate($responseData, $constraints);
 
-        /** @var ConstraintViolationInterface $violation */
-        foreach ($violations as $violation) {
-            $violationMessages[] = '  - '.$violation->getPropertyPath().': '.$violation->getMessage();
-        }
+        return $violations;
+    }
 
-        return $violationMessages;
+    /**
+     * @param ResponseInterface $response
+     *
+     * @return mixed
+     */
+    private function getResponseAsArray(ResponseInterface $response)
+    {
+        $responseData = [
+            'status_code' => $response->getStatusCode(),
+            'body' => json_decode((string)$response->getBody(), true),
+        ];
+
+        return $responseData;
     }
 }

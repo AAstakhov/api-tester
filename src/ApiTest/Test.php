@@ -4,6 +4,7 @@ namespace Aa\ApiTester\ApiTest;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Validator\Constraint;
 
 class Test
 {
@@ -13,26 +14,25 @@ class Test
     private $request;
 
     /**
-     * @var ResponseExpectationInterface
-     */
-    private $responseExpectation;
-
-    /**
      * @var array
      */
     private $testMetadata;
+    /**
+     * @var array|Constraint[]
+     */
+    private $constraints;
 
     /**
      * Constructor.
      *
-     * @param RequestInterface             $request
-     * @param ResponseExpectationInterface $responseExpectation
-     * @param array                        $testMetaData
+     * @param RequestInterface $request
+     * @param array            $constraints
+     * @param array            $testMetaData
      */
-    public function __construct(RequestInterface $request, ResponseExpectationInterface $responseExpectation, array $testMetaData)
+    public function __construct(RequestInterface $request, array $constraints, array $testMetaData)
     {
         $this->request = $request;
-        $this->responseExpectation = $responseExpectation;
+        $this->constraints = $constraints;
         $this->testMetadata = $testMetaData;
     }
 
@@ -44,13 +44,6 @@ class Test
         return $this->request;
     }
 
-    /**
-     * @return ResponseExpectationInterface
-     */
-    public function getResponseExpectation()
-    {
-        return $this->responseExpectation;
-    }
 
     /**
      * @return array
@@ -58,6 +51,14 @@ class Test
     public function getTestMetadata()
     {
         return $this->testMetadata;
+    }
+
+    /**
+     * @return array|Constraint[]
+     */
+    public function getConstraints()
+    {
+        return $this->constraints;
     }
 
 }
