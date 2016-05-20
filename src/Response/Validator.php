@@ -9,7 +9,6 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class Validator
 {
-    const STATUS_CODE_CONSTRAINT_MESSAGE = 'Response status code %s doesn\'t match expected status code %s';
 
     /**
      * @param ResponseInterface  $response
@@ -19,26 +18,11 @@ class Validator
      */
     public function validate(ResponseInterface $response, array $constraints)
     {
-        $responseData = $this->getResponseAsArray($response);
-
+        $accessor = new DataAccessor($response);
         $arrayValidator = new ArrayValidator();
-        $violations = $arrayValidator->validate($responseData, $constraints);
+
+        $violations = $arrayValidator->validate($accessor->asArray(), $constraints);
 
         return $violations;
-    }
-
-    /**
-     * @param ResponseInterface $response
-     *
-     * @return mixed
-     */
-    private function getResponseAsArray(ResponseInterface $response)
-    {
-        $responseData = [
-            'status_code' => $response->getStatusCode(),
-            'body' => json_decode((string)$response->getBody(), true),
-        ];
-
-        return $responseData;
     }
 }
