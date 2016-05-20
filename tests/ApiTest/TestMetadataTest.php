@@ -9,9 +9,10 @@ class TestMetadataTest extends PHPUnit_Framework_TestCase
 {
     public function testCreateTestMetadata()
     {
-        $metadata = new TestMetadata('test', 'testfile.yml');
+        $file = new \SplFileInfo(__FILE__);
+        $metadata = new TestMetadata('test', $file);
 
         $this->assertEquals('test', $metadata->getTestName());
-        $this->assertEquals('testfile.yml', $metadata->getTestFileName());
+        $this->assertEquals('TestMetadataTest.php', $metadata->getFile()->getBasename());
     }
 }

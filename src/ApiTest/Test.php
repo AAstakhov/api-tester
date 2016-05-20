@@ -14,9 +14,9 @@ class Test
     private $request;
 
     /**
-     * @var array
+     * @var TestMetadata
      */
-    private $testMetadata;
+    private $metadata;
     /**
      * @var array|Constraint[]
      */
@@ -27,13 +27,13 @@ class Test
      *
      * @param RequestInterface $request
      * @param array            $constraints
-     * @param array            $testMetaData
+     * @param TestMetadata     $metadata
      */
-    public function __construct(RequestInterface $request, array $constraints, array $testMetaData)
+    public function __construct(RequestInterface $request, array $constraints, TestMetadata $metadata)
     {
         $this->request = $request;
         $this->constraints = $constraints;
-        $this->testMetadata = $testMetaData;
+        $this->metadata = $metadata;
     }
 
     /**
@@ -46,11 +46,11 @@ class Test
 
 
     /**
-     * @return array
+     * @return TestMetadata
      */
-    public function getTestMetadata()
+    public function getMetadata()
     {
-        return $this->testMetadata;
+        return $this->metadata;
     }
 
     /**

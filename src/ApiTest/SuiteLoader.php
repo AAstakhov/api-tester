@@ -62,7 +62,8 @@ class SuiteLoader
                 $constraintDefinitions = isset($test['response']['body']) ? $test['response']['body'] : [];
                 $constraints += $this->constraintReader->read($constraintDefinitions, 'body');
 
-                $tests[] = new Test($request, $constraints, [$file->getBasename('.yml'), $testName]);
+                $metadata = new TestMetadata($testName, $file);
+                $tests[] = new Test($request, $constraints, $metadata);
             }
         }
 

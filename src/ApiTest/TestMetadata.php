@@ -2,26 +2,28 @@
 
 namespace Aa\ApiTester\ApiTest;
 
+use SplFileInfo;
+
 class TestMetadata
 {
     /**
      * @var string
      */
     private $testName;
-    /**
-     * @var string
-     */
-    private $testFileName;
 
     /**
-     * @param string $testName
-     * @param string $testFileName
+     * @var SplFileInfo
      */
-    function __construct($testName, $testFileName)
+    private $file;
+
+    /**
+     * @param string      $testName
+     * @param SplFileInfo $file
+     */
+    function __construct($testName, SplFileInfo $file)
     {
-
         $this->testName = $testName;
-        $this->testFileName = $testFileName;
+        $this->file = $file;
     }
 
     public function getTestName()
@@ -29,8 +31,8 @@ class TestMetadata
         return $this->testName;
     }
 
-    public function getTestFileName()
+    public function getFile()
     {
-        return $this->testFileName;
+        return $this->file;
     }
 }
