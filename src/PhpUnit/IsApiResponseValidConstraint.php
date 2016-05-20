@@ -3,9 +3,13 @@
 namespace Aa\ApiTester\PhpUnit;
 
 use Aa\ApiTester\ApiTest\Test;
+use Aa\ApiTester\Response\DataAccessor;
 use Aa\ApiTester\Response\Validator;
 use PHPUnit_Framework_Constraint;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 
 class IsApiResponseValidConstraint extends PHPUnit_Framework_Constraint
 {
@@ -24,7 +28,6 @@ class IsApiResponseValidConstraint extends PHPUnit_Framework_Constraint
         $this->validator = new Validator();
         $this->test = $test;
     }
-
 
     /**
      * @param ResponseInterface $response
@@ -53,11 +56,29 @@ class IsApiResponseValidConstraint extends PHPUnit_Framework_Constraint
     {
         $violations = $this->validator->validate($response, $this->test->getConstraints());
 
-        return (string)$violations;
+        $messages = '';
+
+        $messages[] .= sprintf('Test file: %s', $this->test->getMetadata()->getFile()->getRealPath());
+        $messages[] .= sprintf('Test name: %s', $this->test->getMetadata()->getTestName());
+
+        /** @var ConstraintViolation $violation */
+        foreach ($violations as $violation) {
+            $constraint = $violation->getConstraint();
+            $messages[] .= sprintf('    %s: %s', $violation->getPropertyPath(), $violation->getMessage());
+            $messages[] .= sprintf('        Actual:   %s', $violation->getInvalidValue());
+            $messages[] .= sprintf('        Constraint: %s', $constraint->validatedBy());
+
+            $constraintOptions = [$constraint->getDefaultOption()] + $constraint->getRequiredOptions();
+            foreach ($constraintOptions as $option) {
+                $messages[] .= sprintf('            %s: %s', $option, $constraint->$option);
+            }
+        }
+
+        return implode(PHP_EOL, $messages);
     }
 
     protected function failureDescription($response)
     {
-        return 'response returned in the test '.$this->toString();
+        return 'the returned data '.$this->toString();
     }
 }

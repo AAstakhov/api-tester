@@ -44,7 +44,6 @@ class Test
         return $this->request;
     }
 
-
     /**
      * @return TestMetadata
      */
@@ -60,5 +59,4 @@ class Test
     {
         return $this->constraints;
     }
-
 }
