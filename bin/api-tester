@@ -12,9 +12,17 @@ foreach ($autoloadPaths as $autoloadPath) {
 
 use Aa\ApiTester\ApiTest\Runner;
 use Aa\ApiTester\ApiTest\SuiteLoader;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 $suiteLoader = new SuiteLoader();
 $suite = $suiteLoader->loadFromDir($argv[1]);
 
 $runner = new Runner();
-$runner->run($suite);
+try {
+    $runner->run($suite);
+    print 'Tests OK'.PHP_EOL.PHP_EOL;
+} catch (ValidatorException $exception) {
+    print 'Following tests failed:'.PHP_EOL.PHP_EOL;
+    print $runner->getLastRunResult();
+    exit(1);
+}

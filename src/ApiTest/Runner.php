@@ -9,13 +9,29 @@ use Symfony\Component\Validator\Exception\ValidatorException;
 
 class Runner
 {
+    /**
+     * @var Client
+     */
     private $guzzleClient;
 
-    function __construct($guzzleClient = null)
+    /**
+     * @var ViolationListFormatter
+     */
+    private $outputFormatter;
+
+    /**
+     * @var string
+     */
+    private $lastRunResult = '';
+
+
+    function __construct(Client $guzzleClient = null)
     {
         if (null === $guzzleClient) {
             $this->guzzleClient = $guzzleClient ?: new Client();
         }
+
+        $this->outputFormatter = new ViolationListFormatter();
     }
 
 
@@ -37,8 +53,17 @@ class Runner
         $violations = $validator->validate($response, $test->getConstraints());
 
         if(0 !== count($violations)) {
+            $this->lastRunResult = $this->outputFormatter->format($violations, $test->getMetadata());
             throw new ValidatorException(sprintf('Test failed'));
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastRunResult()
+    {
+        return $this->lastRunResult;
     }
 }
 
