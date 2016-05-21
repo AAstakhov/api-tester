@@ -3,13 +3,11 @@
 namespace Aa\ApiTester\PhpUnit;
 
 use Aa\ApiTester\ApiTest\Test;
-use Aa\ApiTester\Response\DataAccessor;
+use Aa\ApiTester\ApiTest\ViolationListFormatter;
 use Aa\ApiTester\Response\Validator;
 use PHPUnit_Framework_Constraint;
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\ConstraintViolationInterface;
+
 
 class IsApiResponseValidConstraint extends PHPUnit_Framework_Constraint
 {
@@ -56,25 +54,8 @@ class IsApiResponseValidConstraint extends PHPUnit_Framework_Constraint
     {
         $violations = $this->validator->validate($response, $this->test->getConstraints());
 
-        $messages = '';
-
-        $messages[] .= sprintf('Test file: %s', $this->test->getMetadata()->getFile()->getRealPath());
-        $messages[] .= sprintf('Test name: %s', $this->test->getMetadata()->getTestName());
-
-        /** @var ConstraintViolation $violation */
-        foreach ($violations as $violation) {
-            $constraint = $violation->getConstraint();
-            $messages[] .= sprintf('    %s: %s', $violation->getPropertyPath(), $violation->getMessage());
-            $messages[] .= sprintf('        Actual:   %s', $violation->getInvalidValue());
-            $messages[] .= sprintf('        Constraint: %s', $constraint->validatedBy());
-
-            $constraintOptions = [$constraint->getDefaultOption()] + $constraint->getRequiredOptions();
-            foreach ($constraintOptions as $option) {
-                $messages[] .= sprintf('            %s: %s', $option, $constraint->$option);
-            }
-        }
-
-        return implode(PHP_EOL, $messages);
+        $formatter = new ViolationListFormatter();
+        return $formatter->format($violations, $this->test->getMetadata());
     }
 
     protected function failureDescription($response)
