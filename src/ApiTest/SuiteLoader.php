@@ -125,10 +125,10 @@ class SuiteLoader
      */
     private function createRequest(array &$test)
     {
-        $requestUri = $this->getUri($test);
-        $requestBody = $this->getRequestBody($test);
-        $requestHeaders = $this->getRequestHeaders($test);
-        $request = new Request($test['request']['method'], $requestUri, $requestHeaders, $requestBody);
+        $uri = $this->getUri($test);
+        $body = $this->getRequestBody($test);
+        $headers = $this->getRequestHeaders($test);
+        $request = new Request($test['request']['method'], $uri, $headers, $body);
 
         return $request;
     }
