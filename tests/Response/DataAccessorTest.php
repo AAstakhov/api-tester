@@ -17,13 +17,19 @@ class DataAccessorTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
+        $headers = [
+            'content-type' => 'application/json',
+            'cache-control' => 'public',
+        ];
+
         $data = [
             'name' => 'The Lord of the Rings',
             'isbns' => [
                 'isbn-10' => '9780007117116',
             ],
         ];
-        $response = new Response(451, [], json_encode($data));
+
+        $response = new Response(451, $headers, json_encode($data));
 
         $this->accessor = new DataAccessor($response);
     }
@@ -32,6 +38,10 @@ class DataAccessorTest extends PHPUnit_Framework_TestCase
     {
         $expectedData = [
             'status_code' => 451,
+            'headers' => [
+                'content-type' => 'application/json',
+                'cache-control' => 'public',
+            ],
             'body' => [
                 'name' => 'The Lord of the Rings',
                 'isbns' => [
@@ -45,9 +55,14 @@ class DataAccessorTest extends PHPUnit_Framework_TestCase
 
     public function testGetItem()
     {
-        $this->assertEquals(451, $this->accessor->get('status_code'));
-        $this->assertEquals('The Lord of the Rings', $this->accessor->get('body/name'));
-        $this->assertEquals('9780007117116', $this->accessor->get('body/isbns/isbn-10'));
+        $this->assertEquals(['status_code' => 451], $this->accessor->get('status_code'));
+        $this->assertEquals(['body/name' => 'The Lord of the Rings'], $this->accessor->get('body/name'));
+        $this->assertEquals(['headers/content-type' => 'application/json'], $this->accessor->get('headers/content-type'));
+        $this->assertEquals(['headers' => [
+            'content-type' => 'application/json',
+            'cache-control' => 'public',
+        ]], $this->accessor->get('headers'));
+        $this->assertEquals(['body/isbns/isbn-10' => '9780007117116'], $this->accessor->get('body/isbns/isbn-10'));
         $this->assertNull($this->accessor->get('whatever'));
         $this->assertNull($this->accessor->get('body/whatever/isbn-10'));
     }

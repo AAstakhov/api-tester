@@ -6,6 +6,9 @@ namespace Aa\ApiTester\Response;
 
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @internal
+ */
 class DataAccessor
 {
     /**
@@ -27,6 +30,7 @@ class DataAccessor
 
         $this->data = [
             'status_code' => $this->response->getStatusCode(),
+            'headers' => $this->getHeadersAsArray($response),
             'body' => json_decode((string)$this->response->getBody(), true),
         ];
     }
@@ -54,6 +58,17 @@ class DataAccessor
             $data =& $data[$key];
         }
 
-        return $data;
+        return [$keyPathString => $data];
+    }
+
+    private function getHeadersAsArray(ResponseInterface $response)
+    {
+        $headers = [];
+
+        foreach($response->getHeaders() as $name => $value) {
+            $headers[strtolower($name)] = implode(', ', $value);
+        }
+
+        return $headers;
     }
 }

@@ -59,8 +59,11 @@ class SuiteLoader
                     'status_code' => new EqualTo($test['response']['status_code'])
                 ];
 
-                $constraintDefinitions = isset($test['response']['body']) ? $test['response']['body'] : [];
-                $constraints += $this->constraintReader->read($constraintDefinitions, 'body');
+                $headerConstraintDefinitions = isset($test['response']['headers']) ? $test['response']['headers'] : [];
+                $constraints += $this->constraintReader->read($headerConstraintDefinitions, 'headers');
+
+                $bodyConstraintDefinitions = isset($test['response']['body']) ? $test['response']['body'] : [];
+                $constraints += $this->constraintReader->read($bodyConstraintDefinitions, 'body');
 
                 $metadata = new TestMetadata($testName, $file);
                 $tests[] = new Test($request, $constraints, $metadata);

@@ -26,12 +26,17 @@ class ViolationListFormatter
         foreach ($violations as $violation) {
             $constraint = $violation->getConstraint();
             $messages[] = sprintf('    %s: %s', $violation->getPropertyPath(), $violation->getMessage());
-            $messages[] = sprintf('        Actual:   %s', $violation->getInvalidValue());
-            $messages[] = sprintf('        Constraint: %s', $constraint->validatedBy());
+            if($invalidValue = $violation->getInvalidValue()) {
+                $messages[] = sprintf('        Actual:   %s', $invalidValue     );
+            }
 
-            $constraintOptions = [$constraint->getDefaultOption()] + $constraint->getRequiredOptions();
-            foreach ($constraintOptions as $option) {
-                $messages[] = sprintf('            %s: %s', $option, $constraint->$option);
+            if(null !== $constraint) {
+                $messages[] = sprintf('        Constraint: %s', $constraint->validatedBy());
+
+                $constraintOptions = [$constraint->getDefaultOption()] + $constraint->getRequiredOptions();
+                foreach ($constraintOptions as $option) {
+                    $messages[] = sprintf('            %s: %s', $option, $constraint->$option);
+                }
             }
         }
 

@@ -15,12 +15,17 @@ class ValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new Validator();
 
+        $headers = [
+            'content-type' => 'application/json',
+            'cache-control' => 'public',
+        ];
+
         $body = [
             'name' => 'Bilbo',
             'height' => '122',
         ];
 
-        $response = new Response(451, [], json_encode($body));
+        $response = new Response(451, $headers, json_encode($body));
         $constraints = [
             'status_code' => new EqualTo(['value' => 451]),
             'body/name' => new NotNull(),
@@ -40,18 +45,27 @@ class ValidatorTest extends PHPUnit_Framework_TestCase
             'name' => 'Bilbo',
             'height' => '99',
         ];
+        $headers = [
+            'content-type' => 'application/json',
+            'cache-control' => 'public',
+        ];
 
-        $response = new Response(451, [], json_encode($body));
+        $response = new Response(451, $headers, json_encode($body));
         $constraints = [
             'status_code' => new EqualTo(['value' => 451]),
+            'headers/content-type' => new EqualTo(['value' => 'application/xml']),
             'body/name' => new NotNull(),
             'body/height' => new GreaterThan(['value' => '100']),
         ];
 
         $violations = $validator->validate($response, $constraints);
 
-        $this->assertCount(1, $violations);
+        $this->assertCount(2, $violations);
+
         $this->assertInstanceOf('\Symfony\Component\Validator\ConstraintViolationInterface', $violations[0]);
-        $this->assertEquals('body/height', $violations[0]->getPropertyPath());
+        $this->assertEquals('headers/content-type', $violations[0]->getPropertyPath());
+
+        $this->assertInstanceOf('\Symfony\Component\Validator\ConstraintViolationInterface', $violations[1]);
+        $this->assertEquals('body/height', $violations[1]->getPropertyPath());
     }
 }

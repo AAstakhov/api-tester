@@ -5,6 +5,7 @@ namespace Aa\ApiTester\Response;
 use Psr\Http\Message\ResponseInterface;
 use Aa\ArrayValidator\Validator as ArrayValidator;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class Validator
@@ -16,12 +17,27 @@ class Validator
      *
      * @return ConstraintViolationListInterface
      */
-    public function validate(ResponseInterface $response, array $constraints)
+    public function validate(ResponseInterface $response, array &$constraints)
     {
         $accessor = new DataAccessor($response);
         $arrayValidator = new ArrayValidator();
 
-        $violations = $arrayValidator->validate($accessor->asArray(), $constraints);
+        $statusCodeData = $accessor->get('status_code');
+        $arrayValidator->setIgnoreItemsWithoutConstraints(false);
+        $statusCodeViolations = $arrayValidator->validate($statusCodeData, $constraints);
+
+        $headerData = $accessor->get('headers');
+        $arrayValidator->setIgnoreItemsWithoutConstraints(true);
+        $headerViolations = $arrayValidator->validate($headerData, $constraints);
+
+        $bodyData = $accessor->get('body');
+        $arrayValidator->setIgnoreItemsWithoutConstraints(false);
+        $bodyViolations = $arrayValidator->validate($bodyData, $constraints);
+
+        $violations = new ConstraintViolationList();
+        $violations->addAll($statusCodeViolations);
+        $violations->addAll($headerViolations);
+        $violations->addAll($bodyViolations);
 
         return $violations;
     }
