@@ -10,6 +10,15 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class Validator
 {
+    /**
+     * @var ArrayValidator
+     */
+    private $arrayValidator;
+
+    function __construct()
+    {
+        $this->arrayValidator = new ArrayValidator();
+    }
 
     /**
      * @param ResponseInterface  $response
@@ -20,19 +29,10 @@ class Validator
     public function validate(ResponseInterface $response, array &$constraints)
     {
         $accessor = new DataAccessor($response);
-        $arrayValidator = new ArrayValidator();
 
-        $statusCodeData = $accessor->get('status_code');
-        $arrayValidator->setIgnoreItemsWithoutConstraints(false);
-        $statusCodeViolations = $arrayValidator->validate($statusCodeData, $constraints);
-
-        $headerData = $accessor->get('headers');
-        $arrayValidator->setIgnoreItemsWithoutConstraints(true);
-        $headerViolations = $arrayValidator->validate($headerData, $constraints);
-
-        $bodyData = $accessor->get('body');
-        $arrayValidator->setIgnoreItemsWithoutConstraints(false);
-        $bodyViolations = $arrayValidator->validate($bodyData, $constraints);
+        $statusCodeViolations = $this->validateGroup($accessor, $constraints, 'status_code');
+        $headerViolations = $this->validateGroup($accessor, $constraints, 'headers');
+        $bodyViolations = $this->validateGroup($accessor, $constraints, 'body');
 
         $violations = new ConstraintViolationList();
         $violations->addAll($statusCodeViolations);
@@ -40,5 +40,36 @@ class Validator
         $violations->addAll($bodyViolations);
 
         return $violations;
+    }
+
+    private function getConstraintsForGroup(array &$constraints, $group)
+    {
+        $groupConstraints = [];
+        $pattern = sprintf('#^%s(/.*)?#', $group);
+
+        foreach ($constraints as $path => $constraint) {
+            if(preg_match($pattern, $path)) {
+                $groupConstraints[$path] = $constraint;
+            }
+        }
+
+        return $groupConstraints;
+    }
+
+    /**
+     * @param DataAccessor $accessor
+     * @param array        $constraints
+     * @param string       $group
+     *
+     * @return ConstraintViolationListInterface
+     */
+    private function validateGroup(DataAccessor $accessor, array &$constraints, $group)
+    {
+        $data = $accessor->get($group);
+        $ignoreItemsWithoutConstraints = 'headers' === $group;
+
+        $this->arrayValidator->setIgnoreItemsWithoutConstraints($ignoreItemsWithoutConstraints);
+
+        return $this->arrayValidator->validate($data, $this->getConstraintsForGroup($constraints, $group));
     }
 }
