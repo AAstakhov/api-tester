@@ -3,7 +3,9 @@
 namespace Aa\ApiTester\ApiTest;
 
 
+use Aa\ApiTester\Exceptions\SuiteLoaderException;
 use Aa\ArrayValidator\ConstraintReader;
+use Aa\ArrayValidator\Exceptions\ConstraintReaderException;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Finder\Finder;
@@ -55,15 +57,20 @@ class SuiteLoader
 
                 $request = $this->createRequest($test);
 
-                $constraints = [
-                    'status_code' => new EqualTo($test['response']['status_code'])
-                ];
+                try {
+                    $constraints = [
+                        'status_code' => new EqualTo($test['response']['status_code'])
+                    ];
 
-                $headerConstraintDefinitions = isset($test['response']['headers']) ? $test['response']['headers'] : [];
-                $constraints += $this->constraintReader->read($headerConstraintDefinitions, 'headers');
+                    $headerConstraintDefinitions = isset($test['response']['headers']) ? $test['response']['headers']
+                        : [];
+                    $constraints += $this->constraintReader->read($headerConstraintDefinitions, 'headers');
 
-                $bodyConstraintDefinitions = isset($test['response']['body']) ? $test['response']['body'] : [];
-                $constraints += $this->constraintReader->read($bodyConstraintDefinitions, 'body');
+                    $bodyConstraintDefinitions = isset($test['response']['body']) ? $test['response']['body'] : [];
+                    $constraints += $this->constraintReader->read($bodyConstraintDefinitions, 'body');
+                } catch (ConstraintReaderException $exception) {
+                    throw new SuiteLoaderException($file->getRealPath(), $testName, $exception->getKeyPath(), $exception->getIndex(), 0, $exception);
+                }
 
                 $metadata = new TestMetadata($testName, $file);
                 $tests[] = new Test($request, $constraints, $metadata);

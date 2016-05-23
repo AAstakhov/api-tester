@@ -9,5 +9,6 @@ tests:
             body:
                 0/name:
                     - 'NotNull'
-
+                    - 'EqualTo(value='
+                    - 'NotBlank'
 
