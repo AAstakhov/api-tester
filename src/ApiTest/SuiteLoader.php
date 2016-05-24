@@ -7,6 +7,7 @@ use Aa\ApiTester\Exceptions\SuiteLoaderException;
 use Aa\ArrayValidator\ConstraintReader;
 use Aa\ArrayValidator\Exceptions\ConstraintReaderException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -85,13 +86,15 @@ class SuiteLoader
     /**
      * @param array $test
      *
-     * @return string
+     * @return Uri
      */
     private function getUri($test)
     {
-        $uri = $test['request']['uri'];
+        $uri = new Uri($test['request']['uri']);
+
         if (isset($test['request']['query']) && '' !== $test['request']['query']) {
-            $uri .= '?'.$test['request']['query'];
+            $query = $uri->getQuery().'&'.$test['request']['query'];
+            $uri = $uri->withQuery($query);
         }
         return $uri;
     }
