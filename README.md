@@ -1,5 +1,7 @@
 # API Tester
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/50a0aa7a-8f4a-4247-a80d-e2a8cf4c3d59/big.png)](https://insight.sensiolabs.com/projects/50a0aa7a-8f4a-4247-a80d-e2a8cf4c3d59)
+
 @todo:
 Tests:
     test if input yaml file is not valid
