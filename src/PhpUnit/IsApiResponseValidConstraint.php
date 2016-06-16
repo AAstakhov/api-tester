@@ -8,7 +8,6 @@ use Aa\ApiTester\Response\Validator;
 use PHPUnit_Framework_Constraint;
 use Psr\Http\Message\ResponseInterface;
 
-
 class IsApiResponseValidConstraint extends PHPUnit_Framework_Constraint
 {
     /**
@@ -58,6 +57,11 @@ class IsApiResponseValidConstraint extends PHPUnit_Framework_Constraint
         return $formatter->format($violations, $this->test->getMetadata());
     }
 
+    /**
+     * @param mixed $response
+     *
+     * @return string
+     */
     protected function failureDescription($response)
     {
         return 'the returned data '.$this->toString();

@@ -35,6 +35,9 @@ class DataAccessor
         ];
     }
 
+    /**
+     * @return array
+     */
     public function asArray()
     {
         return $this->data;
@@ -43,7 +46,7 @@ class DataAccessor
     /**
      * @param string $keyPathString
      *
-     * @return mixed
+     * @return array
      */
     public function get($keyPathString)
     {
@@ -61,6 +64,11 @@ class DataAccessor
         return [$keyPathString => $data];
     }
 
+    /**
+     * @param ResponseInterface $response
+     *
+     * @return array
+     */
     private function getHeadersAsArray(ResponseInterface $response)
     {
         $headers = [];

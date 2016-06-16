@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Aa\ApiTester\ApiTest;
-
 
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationListInterface;

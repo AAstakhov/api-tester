@@ -42,6 +42,12 @@ class Validator
         return $violations;
     }
 
+    /**
+     * @param array  $constraints
+     * @param string $group
+     *
+     * @return array
+     */
     private function getConstraintsForGroup(array &$constraints, $group)
     {
         $groupConstraints = [];

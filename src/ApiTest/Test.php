@@ -3,7 +3,6 @@
 namespace Aa\ApiTester\ApiTest;
 
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Validator\Constraint;
 
 class Test

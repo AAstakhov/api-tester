@@ -24,7 +24,9 @@ class Runner
      */
     private $lastRunResult = '';
 
-
+    /**
+     * @param Client $guzzleClient
+     */
     function __construct(Client $guzzleClient = null)
     {
         if (null === $guzzleClient) {
@@ -34,7 +36,9 @@ class Runner
         $this->outputFormatter = new ViolationListFormatter();
     }
 
-
+    /**
+     * @param Suite $suite
+     */
     public function run(Suite $suite)
     {
         /** @var Test $test */
@@ -47,6 +51,10 @@ class Runner
         }
     }
 
+    /**
+     * @param ResponseInterface $response
+     * @param Test              $test
+     */
     protected function validateResponse(ResponseInterface $response, Test $test)
     {
         $validator = new Validator();

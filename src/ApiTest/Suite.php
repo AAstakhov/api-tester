@@ -37,6 +37,4 @@ class Suite implements IteratorAggregate
     {
         return $this->tests;
     }
-
-
 }

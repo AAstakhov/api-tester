@@ -2,7 +2,6 @@
 
 namespace Aa\ApiTester\ApiTest;
 
-
 use Aa\ApiTester\Exceptions\SuiteLoaderException;
 use Aa\ArrayValidator\ConstraintReader;
 use Aa\ArrayValidator\Exceptions\ConstraintReaderException;
@@ -21,11 +20,13 @@ class SuiteLoader
      */
     private $constraintReader;
 
+    /**
+     * Constructor.
+     */
     function __construct()
     {
         $this->constraintReader = new ConstraintReader();
     }
-
 
     /**
      * @param $testDirPath

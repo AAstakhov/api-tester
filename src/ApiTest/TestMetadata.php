@@ -26,11 +26,17 @@ class TestMetadata
         $this->file = $file;
     }
 
+    /**
+     * @return string
+     */
     public function getTestName()
     {
         return $this->testName;
     }
 
+    /**
+     * @return SplFileInfo
+     */
     public function getFile()
     {
         return $this->file;
