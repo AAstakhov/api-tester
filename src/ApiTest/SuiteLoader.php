@@ -55,6 +55,10 @@ class SuiteLoader
             $fileContents = $file->getContents();
             $data = Yaml::parse($fileContents);
 
+            if(!isset($data['tests']) || null === $data['tests']) {
+                continue;
+            }
+
             foreach($data['tests'] as $testName => $test) {
 
                 $request = $this->createRequest($test);

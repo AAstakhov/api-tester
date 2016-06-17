@@ -28,4 +28,12 @@ class SuiteLoaderTest extends PHPUnit_Framework_TestCase
             $this->assertEquals(1, $e->getConstraintIndex());
         }
     }
+
+    public function testLoadFromDirDoNotFailForEmptyTest()
+    {
+        $loader = new SuiteLoader();
+        $testSuite = $loader->loadFromDir(__DIR__.'/test-suite-empty');
+
+        $this->assertInstanceOf('\Aa\ApiTester\ApiTest\Suite', $testSuite);
+    }
 }
