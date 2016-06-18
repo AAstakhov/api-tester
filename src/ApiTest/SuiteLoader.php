@@ -65,7 +65,7 @@ class SuiteLoader
 
                 try {
                     $constraints = [
-                        'status_code' => new EqualTo($test['response']['status_code'])
+                        'status_code' => [new EqualTo($test['response']['status_code'])]
                     ];
 
                     $headerConstraintDefinitions = isset($test['response']['headers']) ? $test['response']['headers']

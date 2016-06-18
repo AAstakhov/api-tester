@@ -27,9 +27,9 @@ class ValidatorTest extends PHPUnit_Framework_TestCase
 
         $response = new Response(451, $headers, json_encode($body));
         $constraints = [
-            'status_code' => new EqualTo(['value' => 451]),
-            'body/name' => new NotNull(),
-            'body/height' => new GreaterThan(['value' => '100']),
+            'status_code' => [new EqualTo(['value' => 451])],
+            'body/name' => [new NotNull()],
+            'body/height' => [new GreaterThan(['value' => '100'])],
         ];
 
         $violations = $validator->validate($response, $constraints);
@@ -52,10 +52,10 @@ class ValidatorTest extends PHPUnit_Framework_TestCase
 
         $response = new Response(451, $headers, json_encode($body));
         $constraints = [
-            'status_code' => new EqualTo(['value' => 451]),
-            'headers/content-type' => new EqualTo(['value' => 'application/xml']),
-            'body/name' => new NotNull(),
-            'body/height' => new GreaterThan(['value' => '100']),
+            'status_code' => [new EqualTo(['value' => 451])],
+            'headers/content-type' => [new EqualTo(['value' => 'application/xml'])],
+            'body/name' => [new NotNull()],
+            'body/height' => [new GreaterThan(['value' => '100'])],
         ];
 
         $violations = $validator->validate($response, $constraints);
