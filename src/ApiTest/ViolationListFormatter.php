@@ -31,7 +31,7 @@ class ViolationListFormatter
             if(null !== $constraint) {
                 $messages[] = sprintf('        Constraint: %s', $constraint->validatedBy());
 
-                $constraintOptions = [$constraint->getDefaultOption()] + $constraint->getRequiredOptions();
+                $constraintOptions = array_filter([$constraint->getDefaultOption()] + $constraint->getRequiredOptions());
                 foreach ($constraintOptions as $option) {
                     $messages[] = sprintf('            %s: %s', $option, $constraint->$option);
                 }

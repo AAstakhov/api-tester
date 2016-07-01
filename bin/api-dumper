@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php
+
+$autoloadPaths = [__DIR__.'/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'];
+foreach ($autoloadPaths as $autoloadPath) {
+    if (file_exists($autoloadPath)) {
+        require $autoloadPath;
+
+        break;
+    }
+}
+
+if(!isset($argv[1]) || !is_dir($argv[1])) {
+    die('Usage: api-dumper DIRECTORY'.PHP_EOL);
+}
+
+use Aa\ApiTester\ApiTest\SuiteLoader;
+use Aa\ApiTester\ApiTest\TestDumper;
+
+$suiteLoader = new SuiteLoader();
+$suite = $suiteLoader->loadFromDir($argv[1]);
+
+$testName = $argv[2];
+
+foreach ($suite->getTests() as $test) {
+    if($test->getMetadata()->getTestName() === $testName) {
+        $dumper = new TestDumper();
+        $result = $dumper->dump($test);
+
+        print $result.PHP_EOL.PHP_EOL;
+    }
+}
+
