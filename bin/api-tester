@@ -24,9 +24,9 @@ $suite = $suiteLoader->loadFromDir($argv[1]);
 $runner = new Runner();
 try {
     $runner->run($suite);
-    print 'Tests OK'.PHP_EOL.PHP_EOL;
+    print sprintf('OK (%d tests)', count($suite->getTests())).PHP_EOL.PHP_EOL;
 } catch (ValidatorException $exception) {
     print 'Following tests failed:'.PHP_EOL.PHP_EOL;
-    print $runner->getLastRunResult();
+    print $runner->getLastValidationError();
     exit(1);
 }
