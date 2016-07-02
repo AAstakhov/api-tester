@@ -30,7 +30,8 @@ class Runner
     function __construct(Client $guzzleClient = null)
     {
         if (null === $guzzleClient) {
-            $this->guzzleClient = $guzzleClient ?: new Client();
+            $config = ['http_errors' => false];
+            $this->guzzleClient = $guzzleClient ?: new Client($config);
         }
 
         $this->outputFormatter = new ViolationListFormatter();
