@@ -22,7 +22,7 @@ class Runner
     /**
      * @var string
      */
-    private $lastRunResult = '';
+    private $lastValidationError = '';
 
     /**
      * @param Client $guzzleClient
@@ -62,7 +62,7 @@ class Runner
         $violations = $validator->validate($response, $test->getConstraints());
 
         if(0 !== count($violations)) {
-            $this->lastRunResult = $this->outputFormatter->format($violations, $test->getMetadata());
+            $this->lastValidationError = $this->outputFormatter->format($violations, $test->getMetadata());
             throw new ValidatorException(sprintf('Test failed'));
         }
     }
@@ -70,9 +70,9 @@ class Runner
     /**
      * @return string
      */
-    public function getLastRunResult()
+    public function getLastValidationError()
     {
-        return $this->lastRunResult;
+        return $this->lastValidationError;
     }
 }
 
